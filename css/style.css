@@ -271,6 +271,101 @@ address {
   font-style: normal;
 }
 
+/* ==========================================================================
+   Foire Aux Questions (FAQ / Accordéons)
+   ========================================================================== */
+
+/* Conteneur de chaque question/réponse */
+details {
+  border: 1px solid var(--vert-clair);
+  border-radius: var(--rayon);
+  background: var(--fond);
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Légère mise en valeur quand l'accordéon est déplié */
+details[open] {
+  border-color: var(--vert);
+}
+
+/* L'en-tête cliquable (la question) */
+summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem var(--espace);
+  font-weight: 600;
+  color: var(--vert);
+  cursor: pointer;
+  list-style: none; /* Masque la flèche native par défaut */
+  user-select: none;
+}
+
+/* Masque le triangle par défaut sur Safari / Chrome ancien */
+summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Flèche personnalisée à droite */
+summary::after {
+  content: "›";
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--rose);
+  transform: rotate(90deg);
+  transition: transform 0.2s ease;
+}
+
+/* Rotation de la flèche à l'ouverture */
+details[open] summary::after {
+  transform: rotate(-90deg);
+}
+
+/* Survol de la question */
+summary:hover {
+  background-color: var(--vert-clair);
+}
+
+/* Accessibilité au clavier */
+summary:focus-visible {
+  outline: 2px solid var(--vert);
+  outline-offset: -2px;
+}
+
+/* Contenu de la réponse */
+details > *:not(summary),
+details {
+  /* Assure un espacement élégant pour le texte */
+  line-height: 1.6;
+}
+
+/* Espacement interne de la réponse dépliée */
+details[open] > summary {
+  border-bottom: 1px solid var(--vert-clair);
+}
+
+/* Marges et mise en page du texte intérieur */
+details {
+  padding-bottom: 0;
+}
+
+/* Si votre texte est brut ou dans un <p> */
+details > p,
+details {
+  color: var(--texte);
+}
+
+/* Espacement appliqué au texte intérieur après ouverture */
+details[open] {
+  padding-bottom: 1rem;
+}
+details[open] > *:not(summary) {
+  padding-inline: var(--espace);
+  margin-top: 0.75rem;
+}
+
 /* Écrans larges */
 
 @media (min-width: 48em) {
