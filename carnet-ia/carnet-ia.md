@@ -654,3 +654,21 @@ Ne pas demander à l'ia de coder à ma place
 Demander une explication des balises que l'on utilise et pourquoi on l'utilise 
 Demander à plusieur IA la meme question pour avoir des réponse différentes 
 Demander un recap des lignes de code que j'ai fait
+
+## Partie E : 
+
+Hypothèse : 
+
+A1. Pour corriger cette erreur, il faut ajouté les @media correspondant dans le CSS car il en manque trop.
+
+A2. Pour corriger cette erreur il faut mettre dans le @media correspondant avec un flex-direction: row-reverse; pour bien mettre l'image a droite puis ou alors bloquer l'image
+
+A3. mettre en surrélevage ou entouré dune couleur différente quand on presse tab pour savoir ou l'on est .
+
+A4. Faire en sorte que ca t'affiche le code postal avec la ville quand tu commence a écrire 
+
+A5. Tiré le fond plus vers le blanc en luminosité faible et les écriture plus vers le noir pour bien différencier et limite augmenter de qlq pixel la taille du site. 
+
+A6. Changer le texte qui ne doit pas etre en italique . 
+
+
