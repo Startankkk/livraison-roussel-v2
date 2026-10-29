@@ -49,9 +49,7 @@ img {
   transform: translateY(0);
 }
 
-*:focus {
-  outline: none;
-}
+
 
 /* En-tête */
 
@@ -247,13 +245,6 @@ button {
 
 input {
   border: 1px solid var(--vert);
-}
-
-input:focus-visible,
-button:focus-visible,
-a:focus-visible {
-  outline: 2px solid #2f5d3a;
-  outline-offset: 2px;
 }
 
 button {
