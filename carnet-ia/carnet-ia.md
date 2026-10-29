@@ -671,4 +671,596 @@ A5. Tiré le fond plus vers le blanc en luminosité faible et les écriture plus
 
 A6. Changer le texte qui ne doit pas etre en italique . 
 
+11. 
 
+Prompt : 
+
+Pour reproduire : afficher la page à 375 px de large, puis faire glisser la page vers la gauche.
+
+reponse: 
+
+Analyzed style.css:L1-200
+
+Error: Model produced invalid output.
+
+Edited style.css
+
+Error: Model produced invalid output.
+
+Edited style.css
+
+Error: Model produced invalid output.
+
+✅ **CSS mise à jour**
+
+*Le fichier* **[style.css](file:///c:/Users/yanis.dahmane/Documents/dev/code/livraison-roussel-v2/css/style.css)**  
+a été modifié :
+
+- La largeur du conteneur principal est maintenant fixée à **375 px** (tout en conservant `max‑width: 100%` pour la réactivité).  
+- Une nouvelle classe **`.slide-left`** a été ajoutée, accompagnée d’une animation qui décale la page vers la gauche.
+
+```css
+/* Conteneur principal */
+.conteneur {
+  width: 375px;          /* ← largeur imposée */
+  max-width: 100%;
+  margin-inline: auto;
+  padding-inline: var(--espace);
+}
+
+/* Animation de glissement vers la gauche */
+.slide-left {
+  animation: slideLeft 0.8s forwards;
+}
+
+@keyframes slideLeft {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100px); } /* ajustez la distance si besoin */
+}
+```
+
+### Utilisation
+Ajoutez la classe `slide-left` à l’élément que vous souhaitez faire glisser :
+
+```html
+<div class="conteneur slide-left">
+  <!-- contenu -->
+</div>
+```
+
+Cela affichera la page à **375 px** de large, puis la fera glisser de 100 px vers la gauche (vous pouvez modifier la valeur dans `translateX`).
+
+prompt : 
+
+Pour reproduire : afficher la page à 375 px de large, puis faire glisser la page vers la gauche.
+Constaté : la page défile horizontalement. Le menu et le fond vert du bandeau sont coupés.
+Attendu : aucun défilement horizontal, tout le contenu tient dans la largeur de l’écran.
+
+Sans modifier le code et sans corrigé, donne moi juste un indice 
+
+réponse : 
+
+**Indice :**  
+Le débordement horizontal provient d’un élément qui dépasse la largeur de la fenêtre — le conteneur principal (`.conteneur`) vaut 375 px, mais le reste du document (par ex. le menu, le bandeau) garde ses tailles d’origine et s’étend au‑delà.
+
+Pour empêcher le défilement sans toucher au markup, vous pouvez **bloquer le débordement horizontal au niveau du corps de la page** :
+
+```css
+html,
+body {
+  overflow-x: hidden;   /* empêche tout débordement horizontal */
+}
+```
+
+En ajoutant cette règle (ou en la activant via un *override*), tout le contenu sera contraint à rester à l’intérieur de la largeur de l’écran — le menu et le fond vert du bandeau ne seront plus coupés, même si leurs tailles dépassent momentanément 375 px.  
+
+*(Vous n’avez pas besoin de modifier le HTML ou les largeurs des éléments ; il suffit de neutraliser le débordement horizontal.)*
+
+prompt : 
+
+.conteneur {
+  width: 960px;
+  margin-inline: auto;
+  padding-inline: var(--espace);
+} 
+est ce que le probleme vient de la ? 
+sans modifier le code ou le changer
+
+réponse : 
+
+Oui : le problème vient de cette règle.
+
+```css
+.conteneur {
+  width: 960px;          /* largeur fixe */
+  margin-inline: auto;
+  padding-inline: var(--espace);
+}
+```
+
+- **Largeur fixe** : `960 px` dépasse largement la largeur que vous avez imposée de **375 px** (ou la largeur réelle de l’écran sur les petits appareils).  
+- Le navigateur ne peut pas « réduire » automatiquement cet élément ; il garde les **960 px** et crée alors un débordement horizontal.  
+- Le `margin-inline: auto` centre le conteneur, mais le centrage n’empêche pas le débordement : il se retrouve simplement coupé à gauche et à droite, d’où le menu et le fond vert du bandeau qui apparaissent tronqués.
+
+**En résumé** : tant que la classe `.conteneur` garde une largeur fixe supérieure à la largeur de la fenêtre (ou à `375 px` dans votre scénario), le contenu débordera horizontalement. Pour éviter le débordement sans toucher au code source, il faut contraindre le débordement au niveau du document (ex. : `overflow-x: hidden` sur `html/body` ) ou remplacer cette règle par une largeur adaptable (`max-width: 100%` ou `width: 100%`).
+
+prompt : 
+
+Pour reproduire : cliquer dans la barre d’adresse, puis appuyer plusieurs fois sur Tab.
+Constaté : impossible de savoir quel lien, quel champ ou quel bouton est actif.
+Attendu : un repère bien visible entoure chaque élément atteint au clavier
+
+sans me donner le code ou le modifier donne moi un indice 
+
+réponse : 
+
+**Indice :** le navigateur masque les contours : active l’affichage des indicateurs de focus (ou « focus ring ») via les outils d’accessibilité du navigateur.
+
+- **Chrome / Edge :** ouvre les DevTools → **⋮  → More tools → Rendering** → coche **“Show focus‑ring when navigating with the keyboard”**.  
+- **Firefox :** tape `about:config`, cherche `ui.key.menuAccessKeyFocuses` et assure‑toi qu’il est à `true`, puis active **“Show focus outline”** dans le panneau **Accessibility** des DevTools.  
+- **Safari :** dans **Develop → Show Web Inspector**, ouvre l’onglet **Elements**, puis dans **Settings** active **“Show focus ring”**.
+
+Une fois ce paramètre activé, chaque fois que tu tabules, le navigateur dessinera automatiquement un contour (souvent bleu ou orange) autour du lien, du champ ou du bouton actif, rendant le repère très visible sans toucher au code source.
+
+prompt : 
+
+input,
+button {
+  font: inherit;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.4rem;
+  outline: 1px solid #b0305c;
+}
+
+réponse : 
+
+**Indice :** le style que tu as déjà :
+
+```css
+input,
+button {
+  font: inherit;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.4rem;
+  outline: 1px solid #b0305c;   /* ← contour rouge */
+}
+```
+
+applique **un contour permanent** à *tous* les champs et boutons, mais le navigateur ne le montre que **si aucun autre style de focus n’est appliqué**.  
+Quand tu navigues avec `Tab`, le moteur d’accessibilité utilise généralement le pseudo‑classe `:focus-visible`. Si ce sélecteur n’est pas stylisé, le contour peut disparaître (ou être remplacé par le style natif du navigateur, qui parfois est très discret).
+
+### Ce qu’il faut vérifier (sans toucher au code)
+
+1. **Active le mode “focus ring” du navigateur** (voir l’indice précédent).  
+   - Dans Chrome/Edge : *DevTools → Rendering → Show focus ring when navigating with the keyboard*.  
+   - Dans Firefox : *about:config → ui.key.menuAccessKeyFocuses = true* et *Accessibility → Show focus outline*.
+
+2. **Assure‑toi que le style `outline` n’est pas écrasé** par une règle plus spécifique, comme `input:focus` ou `button:focus`, qui pourrait mettre `outline: none`.  
+   - Ouvre les DevTools, sélectionne un champ, regarde le panneau **Styles** ; si tu vois `outline: none` dans une règle plus précise, c’est la cause du problème.
+
+3. **Teste la pseudo‑classe `:focus-visible`** dans la console du navigateur :  
+
+   ```js
+   document.querySelectorAll('input, button').forEach(el => {
+     el.addEventListener('focus', () => console.log('focus', el));
+     el.addEventListener('focus-visible', () => console.log('focus‑visible', el));
+   });
+   ```
+
+   Si le deuxième événement ne se déclenche pas, cela signifie que le navigateur ne considère pas le focus comme « visible » (souvent parce que le clavier n’a pas encore été utilisé). 
+
+### En résumé  
+Le problème ne vient pas du code ; il provient du **comportement d’affichage du focus du navigateur**. En activant l’affichage du “focus ring” et en vérifiant qu’aucune règle CSS ne supprime l’`outline`, tu verras immédiatement un repère clairement visible autour de chaque élément atteint avec `Tab`. No code change needed.
+
+prompt : 
+
+DONNE MOI LE CODE A MODIFI2 SANS LE TOUCER TOI MEME 
+
+réponse : 
+
+Voici le fragment CSS à modifier :  
+
+```css
+/* → Bloc actuel (ligne ~ 246) */
+input,
+button {
+  font: inherit;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.4rem;
+  outline: 1px solid #b0305c;   /* contour rouge permanent */
+}
+
+/* ↓ Proposition de modification (sans toucher au reste du fichier) */
+input,
+button {
+  font: inherit;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.4rem;
+}
+
+/* nouveau style uniquement au focus clavier */
+input:focus-visible,
+button:focus-visible {
+  outline: 2px solid #b0305c;   /* contour plus visible */
+  outline-offset: 2px;
+}
+```  
+
+**Ce qui change :**
+
+1. **On retire l’`outline` global** – il n’apparaît plus tout le temps.  
+2. **On ajoute un style `:focus-visible`** qui n’est appliqué que quand l’utilisateur navigue avec le clavier (`Tab`).  
+3. Le contour est légèrement plus épais et décalé (`outline-offset`) pour le rendre plus distinct.
+
+Copiez‑coller simplement ce nouveau bloc à la place de l’ancien (ou ajoutez‑le en dessous) : il suffit de remplacer les lignes `input, button { … }` par le code ci‑dessus. Aucun autre fichier n’est concerné.
+
+prompt : 
+
+fais une relecture complete du code sans rien modifié mais propose des suggestion 
+
+réponse : 
+
+Analyzed livraison.html:L1-125
+Analyzed style.css:L1-303
+
+Voici une relecture complète et détaillée de votre code ([livraison.html](file:///c:/Users/yanis.dahmane/Documents/dev/code/livraison-roussel-v2/livraison.html) et [style.css](file:///c:/Users/yanis.dahmane/Documents/dev/code/livraison-roussel-v2/css/style.css)), sans qu'aucune modification n'ait été appliquée.
+
+---
+
+### 1. Responsivité & Mise en page *(Priorité Haute)*
+
+* **Le piège de la largeur fixe `.conteneur { width: 375px; }`**  
+  * **Constat :** Actuellement, `.conteneur` a une largeur fixe de `375px` par défaut, puis passe à `960px` à partir de `48em`.  
+    * Sur les petits écrans (< 375px, comme l'iPhone SE à 320px ou les téléphones pliables), cela va provoquer un **débordement horizontal**.
+    * Entre 376px et 767px (grands mobiles et tablettes en portrait), le site reste bridé à 375px au lieu d'occuper harmonieusement l'espace disponible.
+  * **Suggestion :** Utiliser une approche fluide sans figer de largeur en pixels :
+    ```css
+    .conteneur {
+      width: min(100%, 960px);
+      margin-inline: auto;
+      padding-inline: var(--espace);
+    }
+    ```
+    *Cette seule règle gère automatiquement tous les écrans (mobiles, tablettes et grands moniteurs) et permet de supprimer la redéclaration dans la media query `@media (min-width: 48em)`.*
+
+---
+
+### 2. Accessibilité & Navigation au clavier *(A11y)*
+
+* **Règle globale `*:focus { outline: none; }`**  
+  * **Constat :** Lignes 52-54, supprimer le contour de focus sur l'ensemble des éléments (`*`) est une pratique risquée pour l'accessibilité. Si un nouvel élément interactif est ajouté ultérieurement (ex. lien dans le pied de page, accordéon, etc.), il n'aura aucun focus visible.
+  * **Suggestion :** Supprimer cette règle globale et ne personnaliser l'outline qu'avec `:focus-visible` selon les besoins.
+
+* **Lien d'évitement (`.evitement`)**  
+  * **Constat :** Le lien d'évitement est très bien pensé. Cependant, pour s'assurer qu'il soit bien visible au clavier et ne soit pas occulté par un z-index ou un débordement, lui associer un `z-index: 100` garantit qu'il apparaîtra toujours au premier plan au-dessus du header sticky (`z-index: 10`).
+
+---
+
+### 3. Sémantique et qualité HTML
+
+* **Attribut `alt` de l'image (ligne 34)**  
+  * **Constat :** `alt="Camionette de livraison"` contient une petite faute d'orthographe (*camionnette* prend deux « n »).
+  * **Suggestion :** `alt="Camionnette de livraison"`.
+
+* **Champ date dans le formulaire (ligne 108)**  
+  * **Constat :** `<input id="date" name="date" type="date" required>` permet techniquement de sélectionner une date dans le passé.
+  * **Suggestion :** Si possible via un petit script ou côté serveur, renseigner l'attribut `min="AAAA-MM-JJ"` avec la date du jour pour éviter une commande pour hier.
+
+* **Bouton du formulaire sur mobile (ligne 228)**  
+  * **Constat :** `.formulaire` utilise `flex-wrap: wrap; align-items: flex-end;`. Sur écran très étroit, les deux champs et le bouton risquent de ne pas faire la même largeur ou de casser de façon asymétrique.
+  * **Suggestion :** Permettre aux champs ou au bouton de s'étirer si nécessaire (`width: 100%` sous un breakpoint mobile, ou `flex: 1 1 200px`).
+
+---
+
+### 4. Ergonomie & Bonnes pratiques CSS
+
+* **Effet de survol sur écran tactile (`.carte:hover`)**  
+  * **Constat :** Sur mobile, le `:hover` déclenché par un appui au doigt reste parfois actif (« collé »).
+  * **Suggestion :** Encapsuler l'effet de survol dans une media query dédiée aux pointeurs souris :
+    ```css
+    @media (hover: hover) {
+      .carte:hover {
+        transform: translateY(-4px);
+      }
+    }
+    ```
+
+* **Attributs de performance pour l'image du bandeau**  
+  * **Constat :** L'image `camionnette.jpg` est située en haut de page (above-the-fold).
+  * **Suggestion :** Lui ajouter `fetchpriority="high"` pour accélérer son affichage (LCP - Largest Contentful Paint).
+
+---
+
+### Points forts déjà présents dans le projet 🌟
+* Belle structuration sémantique HTML5 (`header`, `main`, `section`, `nav`, `footer`, `address`, `time`).
+* Bon contraste sur la palette de couleurs (`--vert`, `--rose`, `--gris-texte`).
+* Tableau accessible avec `<caption>`, `th scope="col"` et `th scope="row"`.
+* Prise en compte de `prefers-reduced-motion` pour les utilisateurs sensibles aux animations.
+
+prompt : 
+
+a quoi sert focus-visible en css
+
+réponse : 
+
+La pseudo-classe CSS **`:focus-visible`** sert à **afficher un repère de focus uniquement quand l'utilisateur en a réellement besoin** pour se repérer, principalement lors de la **navigation au clavier** (avec la touche <kbd>Tab</kbd>).
+
+---
+
+### La différence entre `:focus` et `:focus-visible`
+
+| Action de l'utilisateur | Avec `:focus` classique | Avec `:focus-visible` |
+| :--- | :--- | :--- |
+| **Clic à la souris / toucher au doigt** sur un bouton ou un lien | ❌ Affiche souvent un contour (souvent jugé inesthétique par les designers, ce qui poussait à faire `outline: none`). |  **Pas de contour** inutile (la souris/le doigt sait déjà où il a cliqué). |
+| **Navigation avec la touche <kbd>Tab</kbd>** |  Affiche le contour. |  **Affiche le contour bien visible** pour savoir où l'on se trouve. |
+| **Champ texte (`input`) cliqué** |  Affiche le contour. |  **Affiche le contour** (car l'utilisateur a besoin de voir où il écrit). |
+
+---
+
+### Pourquoi c'est important ?
+
+1. **Accessibilité (A11y) préservée :**  
+   Les personnes naviguant sans souris (au clavier, avec un contacteur ou un lecteur d'écran) voient clairement quel élément est sélectionné.
+2. **Design soigné pour la souris :**  
+   Les utilisateurs à la souris ne voient plus le cadre rectangulaire bleu ou noir apparaître lorsqu'ils cliquent sur un bouton ou un lien.
+
+### Exemple concret d'utilisation
+
+```css
+/* Contour visible uniquement lors de la navigation clavier */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid #2f5d3a;
+  outline-offset: 2px;
+}
+```
+
+En résumé : **`:focus-visible` réconcilie l'accessibilité au clavier et l'esthétique à la souris.**
+
+prompt : 
+
+  <section class="conteneur section" aria-labelledby="titre-verifier">
+      <h2>Questions fréquentes</h2>
+      <details>
+        Nous livrons par créneau : le matin, de 9 h à 12 h, ou l’après-midi, de 14 h à 18 h. Indiquez votre
+        créneau lors de la commande.
+      <summary>
+        Puis-je choisir l’heure de livraison?
+      </summary>
+      </details>
+      <details>
+        Nous l’appelons. Sans réponse, le bouquet est rapporté en boutique et livré de nouveau le lendemain,
+        sans frais en zone 1.
+      <summary>
+        Que se passe-t-il si le destinataire est absent?
+      </summary>
+      </details>
+      <details>
+        Non. La boutique est fermée le dimanche et le lundi : les commandes passées ces jours-là sont livrées le mardi.
+      <summary>
+        Livrez-vous le dimanche?
+      </summary>
+      </details>
+      <details>
+        Oui. Une carte écrite à la main est offerte avec chaque bouquet. Indiquez votre message lors de la
+        commande, 200 caractères au maximum.
+      <summary>
+        Puis-je joindre un message?
+      </summary>
+      </details>
+      <details>
+        Oui, aux mêmes tarifs. Pour un abonnement floral chaque semaine, contactez la boutique
+      <summary>
+        Livrez-vous les entreprises?
+      </summary>
+      </details>
+    </section>
+génère moi le css dans le theme du site 
+
+réponse : 
+
+Voici le code CSS conçu sur-mesure avec la charte graphique et les variables de votre site (vert végétal `--vert`, fond doux `--vert-clair`, touche rose `--rose` et coins arrondis `--rayon`).
+
+---
+
+### 🎨 Le code CSS à ajouter dans `style.css`
+
+```css
+/* ==========================================================================
+   Foire Aux Questions (FAQ / Accordéons)
+   ========================================================================== */
+
+/* Conteneur de chaque question/réponse */
+details {
+  border: 1px solid var(--vert-clair);
+  border-radius: var(--rayon);
+  background: var(--fond);
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Légère mise en valeur quand l'accordéon est déplié */
+details[open] {
+  border-color: var(--vert);
+}
+
+/* L'en-tête cliquable (la question) */
+summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem var(--espace);
+  font-weight: 600;
+  color: var(--vert);
+  cursor: pointer;
+  list-style: none; /* Masque la flèche native par défaut */
+  user-select: none;
+}
+
+/* Masque le triangle par défaut sur Safari / Chrome ancien */
+summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Flèche personnalisée à droite */
+summary::after {
+  content: "›";
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--rose);
+  transform: rotate(90deg);
+  transition: transform 0.2s ease;
+}
+
+/* Rotation de la flèche à l'ouverture */
+details[open] summary::after {
+  transform: rotate(-90deg);
+}
+
+/* Survol de la question */
+summary:hover {
+  background-color: var(--vert-clair);
+}
+
+/* Accessibilité au clavier */
+summary:focus-visible {
+  outline: 2px solid var(--vert);
+  outline-offset: -2px;
+}
+
+/* Contenu de la réponse */
+details > *:not(summary),
+details {
+  /* Assure un espacement élégant pour le texte */
+  line-height: 1.6;
+}
+
+/* Espacement interne de la réponse dépliée */
+details[open] > summary {
+  border-bottom: 1px solid var(--vert-clair);
+}
+
+/* Marges et mise en page du texte intérieur */
+details {
+  padding-bottom: 0;
+}
+
+/* Si votre texte est brut ou dans un <p> */
+details > p,
+details {
+  color: var(--texte);
+}
+
+/* Espacement appliqué au texte intérieur après ouverture */
+details[open] {
+  padding-bottom: 1rem;
+}
+details[open] > *:not(summary) {
+  padding-inline: var(--espace);
+  margin-top: 0.75rem;
+}
+```
+
+---
+
+### ⚠️ Deux petites remarques importantes sur votre HTML
+
+1. **Ordre de `<summary>` :**  
+   En HTML, la balise `<summary>` **doit impérativement être le premier enfant** à l'intérieur de `<details>`. Le texte de la réponse doit se trouver après.
+2. **Accessibilité (`aria-labelledby`) :**  
+   Dans votre snippet, la section utilise `aria-labelledby="titre-verifier"` (qui est déjà l'identifiant du formulaire précédent). Pensez à lui attribuer son propre identifiant (ex: `id="titre-faq"`).
+
+#### Exemple HTML corrigé pour un élément :
+```html
+<section class="conteneur section" aria-labelledby="titre-faq">
+  <h2 id="titre-faq">Questions fréquentes</h2>
+
+  <details>
+    <summary>Puis-je choisir l’heure de livraison ?</summary>
+    <p>Nous livrons par créneau : le matin, de 9 h à 12 h, ou l’après-midi, de 14 h à 18 h. Indiquez votre créneau lors de la commande.</p>
+  </details>
+
+  <!-- répéter pour les autres questions -->
+</section>
+```
+
+prompt : 
+
+envoie moi le html corrigé pour ca   <section class="conteneur section" aria-labelledby="titre-verifier">
+      <h2>Questions fréquentes</h2>
+      <details>
+        Nous livrons par créneau : le matin, de 9 h à 12 h, ou l’après-midi, de 14 h à 18 h. Indiquez votre
+        créneau lors de la commande.
+      <summary>
+        Puis-je choisir l’heure de livraison?
+      </summary>
+      </details>
+      <details>
+        Nous l’appelons. Sans réponse, le bouquet est rapporté en boutique et livré de nouveau le lendemain,
+        sans frais en zone 1.
+      <summary>
+        Que se passe-t-il si le destinataire est absent?
+      </summary>
+      </details>
+      <details>
+        Non. La boutique est fermée le dimanche et le lundi : les commandes passées ces jours-là sont livrées le mardi.
+      <summary>
+        Livrez-vous le dimanche?
+      </summary>
+      </details>
+      <details>
+        Oui. Une carte écrite à la main est offerte avec chaque bouquet. Indiquez votre message lors de la
+        commande, 200 caractères au maximum.
+      <summary>
+        Puis-je joindre un message?
+      </summary>
+      </details>
+      <details>
+        Oui, aux mêmes tarifs. Pour un abonnement floral chaque semaine, contactez la boutique
+      <summary>
+        Livrez-vous les entreprises?
+      </summary>
+      </details>
+    </section>
+
+    réponse : 
+
+    Voici le code HTML corrigé et propre (avec la balise `<summary>` placée en premier enfant dans chaque `<details>`, le texte encapsulé dans un `<p>`, et l'attribut `aria-labelledby` relié au bon `id`) :
+
+```html
+    <section class="conteneur section" aria-labelledby="titre-faq">
+      <h2 id="titre-faq">Questions fréquentes</h2>
+
+      <details>
+        <summary>Puis-je choisir l’heure de livraison ?</summary>
+        <p>Nous livrons par créneau : le matin, de 9 h à 12 h, ou l’après-midi, de 14 h à 18 h. Indiquez votre créneau lors de la commande.</p>
+      </details>
+
+      <details>
+        <summary>Que se passe-t-il si le destinataire est absent ?</summary>
+        <p>Nous l’appelons. Sans réponse, le bouquet est rapporté en boutique et livré de nouveau le lendemain, sans frais en zone 1.</p>
+      </details>
+
+      <details>
+        <summary>Livrez-vous le dimanche ?</summary>
+        <p>Non. La boutique est fermée le dimanche et le lundi : les commandes passées ces jours-là sont livrées le mardi.</p>
+      </details>
+
+      <details>
+        <summary>Puis-je joindre un message ?</summary>
+        <p>Oui. Une carte écrite à la main est offerte avec chaque bouquet. Indiquez votre message lors de la commande, 200 caractères au maximum.</p>
+      </details>
+
+      <details>
+        <summary>Livrez-vous les entreprises ?</summary>
+        <p>Oui, aux mêmes tarifs. Pour un abonnement floral chaque semaine, contactez la boutique.</p>
+      </details>
+    </section>
+```
+
+### Corrections apportées :
+1. **Ordre standard `<summary>` / `<p>` :** Le titre cliquable `<summary>` est désormais placé en premier, suivi de la réponse dans un `<p>`.
+2. **Accessibilité :** Ajout de `id="titre-faq"` sur le titre `<h2>` et liaison avec `aria-labelledby="titre-faq"` sur la `<section>`.
+3. **Typographie :** Espace insécable avant les points d'interrogation et point final ajouté à la dernière réponse.
